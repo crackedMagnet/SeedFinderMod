@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "cm-seed-finder-mod",
+  "version": "0.1.0",
+
+  "name": "crackedMagnet's Seed Finder Mod",
+  "description": "Allows you to run seed searches in Minecraft",
+  "authors": [
+    "crackedMagnet"
+  ],
+  "contact": {
+    "homepage": "https://crackedmagnet.com/",
+    "sources": "https://github.com/"
+  },
+
+  "license": "MIT",
+  "icon": "assets/seedfindermod/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.crackedmagnet.seedfindermod.init.SeedFinderModInit"
+    ]
+  },
+  "mixins": [
+    "modid.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "fabric-api": "*",
+    "minecraft": "~1.19",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  },
+  "custom": {
+		"loom:injected_interfaces": {
+			"net/minecraft/server/MinecraftServer": ["com/crackedmagnet/seedfindermod/injection/CustomServerInterface"]
+		}
+	},
+  "accessWidener" : "seedfindermod.accesswidener"
+}
