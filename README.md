@@ -1,4 +1,4 @@
-#Seed Finder Mod
+# Seed Finder Mod
 **Seed Finder Mod** adds a new world type that allows you to specify basic structure and biome criteria.  Once a seed that matches that criteria is found a new dimension is added with the overworld of that seed and you are given a "seed book" with details about the seed and criteria.  You can then fly around, decide if you like the seed and add any notes to the book.  It is recommended to put seeds that you would like to short list in an ender chest.  They can be reloaded later by holding the seed book and using the ```/findseed load``` command.
 
 **Important:** Do not use the seed finder world for playing minecraft.  Create a new world with the seed you found instead.
