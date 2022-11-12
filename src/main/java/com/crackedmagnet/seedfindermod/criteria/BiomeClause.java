@@ -4,8 +4,17 @@
  */
 package com.crackedmagnet.seedfindermod.criteria;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
@@ -14,8 +23,7 @@ import net.minecraft.world.biome.Biome;
  * @author matthewferguson
  */
 public class BiomeClause {
-    //proportion
-    //includes
+    
     Set<RegistryKey<Biome>> biomes;
 
     String description;
@@ -24,6 +32,17 @@ public class BiomeClause {
         this.description=description;
     }
 
+    protected BiomeClause(NbtCompound nbt)
+    {
+        this.biomes=new HashSet<>();
+        this.description=nbt.getString("description");
+        NbtList biomeNbtList=(NbtList) nbt.get("biomes");
+        for(int i=0;i<biomeNbtList.size();i++)
+        {
+            RegistryKey<Biome> biomeKey = RegistryKey.of(Registry.BIOME_KEY, new Identifier(biomeNbtList.getString(i)));
+            biomes.add(biomeKey);
+        }
+    }
     
     
     public boolean matches(Map<RegistryKey<Biome>,Integer> biomeCounts)
@@ -45,6 +64,24 @@ public class BiomeClause {
         return getDescription()+" exists with 500 blocks";
     }
     
+    public NbtCompound writeNbt(NbtCompound nbt)
+    {
+        nbt.putString("description", description);
+        NbtList biomeList=new NbtList();
+        List<RegistryKey<Biome>> biomeKeys=new ArrayList<>(biomes);
+        for(int i=0;i<biomeKeys.size();i++)
+        {
+            Identifier identifier=biomeKeys.get(i).getValue();
+            biomeList.add(i, NbtString.of(identifier.toString()));
+        }
+        nbt.put("biomes", biomeList);
+        return nbt;
+    }
+    
+    public static BiomeClause fromNbt(NbtCompound nbt)
+    {
+        return new BiomeClause(nbt);
+    }
     
     
     

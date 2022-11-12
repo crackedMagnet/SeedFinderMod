@@ -6,6 +6,7 @@ package com.crackedmagnet.seedfindermod.criteria;
 
 import java.util.Map;
 import java.util.Set;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
@@ -21,6 +22,12 @@ public class BiomeProportionClause extends BiomeClause{
     public BiomeProportionClause(Set<RegistryKey<Biome>> biomes, String description, int minPercent) {
         super(biomes,description);
         this.minPercent = minPercent;
+    }
+    
+    private BiomeProportionClause(NbtCompound nbt)
+    {
+        super(nbt);
+        minPercent=nbt.getInt("minPercent");
     }
     
     
@@ -47,6 +54,19 @@ public class BiomeProportionClause extends BiomeClause{
     public int getMinPercent() {
         return minPercent;
     }
+
+    @Override
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        nbt=super.writeNbt(nbt);
+        nbt.putInt("minPercent", minPercent);
+        return nbt;
+    }
+
+    public static BiomeClause fromNbt(NbtCompound nbt) {
+        return new BiomeProportionClause(nbt);
+    }
+    
+    
     
     
     

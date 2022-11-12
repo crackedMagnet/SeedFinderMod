@@ -91,10 +91,13 @@ public class QuickBiomeSource {
     
     public Map<RegistryKey<Biome>,Integer> getBiomeCounts(int bx, int bz, int range)
     {
+        return getBiomeCounts(bx, bz, range, 50);
+    }
+    
+    public Map<RegistryKey<Biome>,Integer> getBiomeCounts(int bx, int bz, int range, int increment)
+    {
         int rangesquare=range*range;
         Map<RegistryKey<Biome>,Integer> output=new HashMap<>();
-        //int increment=16; //4 for quartpos 16 for chunk
-        int increment=50; //4 for quartpos 16 for chunk
         for(int x=-range;x<range;x+=increment)
             for(int z=-range;z<range;z+=increment)
             {
@@ -108,7 +111,5 @@ public class QuickBiomeSource {
         
         return output;
     }
-    
-  
     
 }

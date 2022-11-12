@@ -37,6 +37,8 @@ public class JavaPillagerOutpostFinder extends BiomeGridStructure {
     
     @Override
     public boolean isValid(long seed, QuickBiomeSource biomeSource, ChunkPos chunk) {
+        boolean parentIsValid=super.isValid(seed, biomeSource, chunk);
+        if(!parentIsValid) return false;
         GridStructure villageFinder = StructureFinders.JAVA_VILLAGE.value();
         Set<ChunkPos> possibleVillagesInRange = villageFinder.getChunksInSquareRange(seed, chunk, 10);
         for(ChunkPos villageChunk:possibleVillagesInRange)

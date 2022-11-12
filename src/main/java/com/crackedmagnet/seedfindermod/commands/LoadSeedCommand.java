@@ -6,8 +6,10 @@ package com.crackedmagnet.seedfindermod.commands;
 
 
 import com.crackedmagnet.seedfindermod.CustomWorldPreset;
+import com.crackedmagnet.seedfindermod.SeedFinderRegistries;
 import com.crackedmagnet.seedfindermod.SeedFinderUtils;
 import static com.crackedmagnet.seedfindermod.commands.CriteriaResetCommand.LOGGER;
+import com.crackedmagnet.seedfindermod.search.SeedSearch;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -15,6 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.WritableBookItem;
 import net.minecraft.item.WrittenBookItem;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -57,6 +60,13 @@ public class LoadSeedCommand implements Command<ServerCommandSource>{
                         try
                         {
                             seed=Long.parseLong(name.asTruncatedString(32));
+                            NbtCompound seedSearchNbt = mainHandStack.getSubNbt("seedSearch");
+                            if(seedSearchNbt!=null)
+                            {
+                                SeedSearch seedSearch = SeedFinderRegistries.DEFAULT_SEED_SEARCH.value();
+                                seedSearch.setFromNbt(seedSearchNbt);
+                                LOGGER.info("Loading search criteria from book");
+                            }
                         }
                         catch(NumberFormatException formatException)
                         {
