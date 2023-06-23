@@ -9,13 +9,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 /**
@@ -39,7 +40,7 @@ public class BiomeClause {
         NbtList biomeNbtList=(NbtList) nbt.get("biomes");
         for(int i=0;i<biomeNbtList.size();i++)
         {
-            RegistryKey<Biome> biomeKey = RegistryKey.of(Registry.BIOME_KEY, new Identifier(biomeNbtList.getString(i)));
+            RegistryKey<Biome> biomeKey = RegistryKey.of(RegistryKeys.BIOME, new Identifier(biomeNbtList.getString(i)));
             biomes.add(biomeKey);
         }
     }

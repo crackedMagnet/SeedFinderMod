@@ -25,34 +25,31 @@ public class SearchThread implements Runnable{
     SeedSearch seedSearch;
     SearchResultHandler searchResultHandler;
 
-    long current48Bit;
-    long current64Bit;
     boolean isRunning48=false;
     boolean isRunning64=false;
     Calendar lastCheckin;
     long sinceCheckinCount=0;
     double currentSeedPerSec=0;
+    NextSeedProvider nextSeedProvider;
     QuickSampler qs=new QuickSampler();
     QuickBiomeSource quickBiomeSource=new QuickBiomeSource(qs);
     SearchProgressHandler searchProgressHandler;
     public static final Logger LOGGER = LoggerFactory.getLogger("seedfindermod");
 
+    long last48Bit;
     
-    public SearchThread(SeedSearch seedSearch, SearchResultHandler searchResultHandler) {
+    public SearchThread(SeedSearch seedSearch, NextSeedProvider nextSeedProvider, SearchResultHandler searchResultHandler) {
         this.seedSearch=seedSearch;
         this.searchResultHandler=searchResultHandler;
-        this.current48Bit=SeedHolder.getCurrentSeed()&0xFFFFFFFFFFFFl; //use only lower 48 bits.;
+        this.nextSeedProvider=nextSeedProvider;
         searchProgressHandler=null;
-        
     }
     
-     public SearchThread(SeedSearch seedSearch, SearchResultHandler searchResultHandler, SearchProgressHandler searchProgressHandler) {
+     public SearchThread(SeedSearch seedSearch, NextSeedProvider nextSeedProvider,SearchResultHandler searchResultHandler, SearchProgressHandler searchProgressHandler) {
         this.seedSearch=seedSearch;
         this.searchResultHandler=searchResultHandler;
-
-        this.current48Bit=SeedHolder.getCurrentSeed()&0xFFFFFFFFFFFFl; //use only lower 48 bits.
+        this.nextSeedProvider=nextSeedProvider;
         this.searchProgressHandler=searchProgressHandler;
-        
     }
     
     
@@ -65,27 +62,39 @@ public class SearchThread implements Runnable{
         {
             List<StructureClause> criteria = seedSearch.listCriteria();
             lastCheckin=Calendar.getInstance();
-            LOGGER.debug("SearchThread.run() start");
+            LOGGER.info("SearchThread.run() start");
             isRunning48=true;
 
             while(isRunning48)
             {
-                current48Bit++;
+                Long current48Bit=nextSeedProvider.nextStructureSeed();
+                if(current48Bit==null)
+                {
+                    isRunning48=false;
+                    searchProgressHandler.sendMessage("Seed List Exhausted"); //Should probably have some sort of seed result instead of the long.
+                    break;
+                }
+                last48Bit=current48Bit;
                 sinceCheckinCount++;
                 List<List<ChunkPos>> match = seedSearch.findMatch(current48Bit);
                 if(match!=null)
                 {
                     LOGGER.info("SearchThread: Structure Match Found Starting Biomes "+Long.toString(current48Bit));
 
-                    long upper16=0;
+                   // long upper16=0;
                     isRunning64=true;
-                    while(isRunning64&&upper16<65536) //Math.pow(2,16)
+                    while(isRunning64) //Math.pow(2,16)
                     {
-                       
                         sinceCheckinCount++;
-                        current64Bit=(upper16<<48)|current48Bit; 
                         
-                        if((upper16&0xFF)==0) reportProgress();
+                        Long current64Bit=nextSeedProvider.nextBiomeSeed();
+                        if(current64Bit==null)
+                        {
+                            isRunning64=false;
+                            break;
+                        }
+                        
+                        if((current64Bit&0xFF000000000000l)==0) reportProgress();
              
                         qs.reInit(current64Bit); //reinitialises the noise generators with a new seed;
                         boolean seedRejected=false;
@@ -122,7 +131,7 @@ public class SearchThread implements Runnable{
                                 isRunning48=false;
                             }
                         }
-                        upper16++;
+                        //upper16++;
                     }
                     LOGGER.info("SearchThread: Structure Match Found Finished Biomes "+Long.toString(current48Bit));
 
@@ -134,7 +143,7 @@ public class SearchThread implements Runnable{
                 }
 
             }
-            LOGGER.debug("SearchThread.run() exit");
+            LOGGER.info("SearchThread.run() exit");
         }
         catch(Exception ex)
         {
@@ -150,9 +159,9 @@ public class SearchThread implements Runnable{
         {
             currentSeedPerSec=((double)sinceCheckinCount/(double)diff)*1000d;
 
-            LOGGER.debug("SearchThread: "+Long.toString(current48Bit)+" "+Long.toString(sinceCheckinCount)+" "+Long.toString(Math.round(currentSeedPerSec)));
+            LOGGER.debug("SearchThread: "+Long.toString(last48Bit)+" "+Long.toString(sinceCheckinCount)+" "+Long.toString(Math.round(currentSeedPerSec)));
             if(searchProgressHandler!=null)
-                searchProgressHandler.updateProgress(current48Bit, sinceCheckinCount, diff);
+                searchProgressHandler.updateProgress(last48Bit, sinceCheckinCount, diff);
             lastCheckin=currentTime;
             sinceCheckinCount=0;
 
@@ -161,7 +170,7 @@ public class SearchThread implements Runnable{
     
     public long getCurrentSeed()
     {
-        return current48Bit;
+        return last48Bit;
     }
     
     public double getCurrentSeedsPerSec()

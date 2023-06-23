@@ -6,16 +6,23 @@ package com.crackedmagnet.seedfindermod;
 
 import com.mojang.brigadier.context.CommandContext;
 import java.util.OptionalLong;
+
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.tag.BlockTags;
+//import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.RegistryEntry;
+//import net.minecraft.util.registry.BuiltinRegistries;
+//import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.structure.Structure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -23,10 +30,10 @@ import net.minecraft.world.dimension.DimensionType;
  */
 public class CustomWorldPreset {
     
-    public static DimensionOptions seedFinderWorldDimensionOptions;
-    public static final Identifier SEED_FINDER_ID = new Identifier("seedfindermod:seed_finder_dimension_type");
-    public static final RegistryEntry<DimensionType> SEED_FINDER_DIMENSION_TYPE = BuiltinRegistries.add(BuiltinRegistries.DIMENSION_TYPE, SEED_FINDER_ID,new DimensionType(OptionalLong.empty(), true, false, false, true, 1.0D, true, false, -64, 384, 384, BlockTags.INFINIBURN_OVERWORLD, SEED_FINDER_ID, 0.0F, new DimensionType.MonsterSettings(false, true, UniformIntProvider.create(0, 7), 0)));
-    
+    public static final Identifier SEED_FINDER_ID = new Identifier("seedfindermod:seed_finder_dimension");
+    public static final Logger LOGGER = LoggerFactory.getLogger("seedfindermod");
+
+
     /**
      * Checks if the chunk generator used is the instance used in the seed finder world preset
      * This is a protection to prevent people from messing up their 
@@ -47,7 +54,10 @@ public class CustomWorldPreset {
     
     public static boolean isSeedFinderWorld(ServerWorld world)
     {
-        Identifier worldDimId = world.getDimensionKey().getValue();
-        return worldDimId.equals(SEED_FINDER_DIMENSION_TYPE.getKey().orElseThrow().getValue());
+
+        Identifier worldDimId = world.getRegistryKey().getValue();
+        LOGGER.info(worldDimId.toString());
+        return worldDimId.equals(SEED_FINDER_ID);
+
     }
 }

@@ -7,10 +7,13 @@ package com.crackedmagnet.seedfindermod.structures;
 import com.crackedmagnet.seedfindermod.biome.QuickBiomeSource;
 import com.crackedmagnet.seedfindermod.rng.BedrockRandom;
 import java.util.Set;
+
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.noise.NoiseParametersKeys;
 import net.minecraft.world.gen.structure.Structure;
 
 /**
@@ -19,7 +22,11 @@ import net.minecraft.world.gen.structure.Structure;
  */
 public class BedrockBiomeGridStructure extends BiomeGridStructure{
 
-    
+    protected static  RegistryEntryLookup<Structure> structureRegistry;
+
+
+
+
     int spacing;
     int separation;
     int salt;
@@ -27,6 +34,11 @@ public class BedrockBiomeGridStructure extends BiomeGridStructure{
     boolean linear;
     BedrockRandom rand=new BedrockRandom();
     RegistryEntry<Structure> structureEntry;
+
+    public static void bootstrap(RegistryEntryLookup.RegistryLookup registryLookup)
+    {
+        structureRegistry=registryLookup.getOrThrow(RegistryKeys.STRUCTURE);
+    }
 
     public BedrockBiomeGridStructure(RegistryEntry<Structure> structureEntry, Set<RegistryKey<Biome>> biomes,  int spacing, int separation, int salt, boolean linear, int checkRange) {
         super(null, biomes);
@@ -54,15 +66,7 @@ public class BedrockBiomeGridStructure extends BiomeGridStructure{
     @Override
     public boolean isValid(long seed, QuickBiomeSource biomeSource, ChunkPos chunk) {
         if(checkRange==0) return true;
-        /*int blockx=chunk.x*16+8;
-        int blockz=chunk.z*16+8;
-        for(int x=blockx-checkRange;x<=blockx+checkRange;x+=4)
-            for(int z=blockz-checkRange;z<=blockz+checkRange;z+=4)
-            {
-                Biome surfaceBiome = biomeSource.getSurfaceBiome(x, z);
-                if(!validBiomes.contains(surfaceBiome)) return false;
-            }
-        return true;*/
+
         return biomeCheck(biomeSource, chunk, validBiomes, checkRange);
     }
     public boolean biomeCheck(QuickBiomeSource biomeSource, ChunkPos chunk, Set<RegistryKey<Biome>> biomes, int range) {

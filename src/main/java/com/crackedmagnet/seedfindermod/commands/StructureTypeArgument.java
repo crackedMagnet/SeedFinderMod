@@ -20,9 +20,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.command.CommandSource;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.RegistryKey;
 
 
 import org.slf4j.Logger;
@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  * @author matthewferguson
  */
 public class StructureTypeArgument implements ArgumentType<RegistryKey<GridStructure>>{
-   //private static final List<Identifier> identifierList=new ArrayList<>();
     
 public static final Logger LOGGER = LoggerFactory.getLogger("seedfindermod");
     @Override

@@ -6,11 +6,15 @@ package com.crackedmagnet.seedfindermod.biome;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
+
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
+
+import net.minecraft.structure.StructureSet;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSourceParameterList;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSourceParameterLists;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +42,14 @@ public class QuickBiomeSource {
     
     
     
-    public static void bootstrap()
+    public static void bootstrap(RegistryEntryLookup.RegistryLookup registryLookup)
     {
-        MultiNoiseBiomeSource biomeSource = MultiNoiseBiomeSource.Preset.OVERWORLD.getBiomeSource(BuiltinRegistries.BIOME);
+        LOGGER.info("QuickBiomeSource bootstrap()");
+        RegistryEntryLookup<MultiNoiseBiomeSourceParameterList> noiseParmetersRegistry = registryLookup.getOrThrow(RegistryKeys.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST);
+
+        RegistryEntry.Reference<MultiNoiseBiomeSourceParameterList> overworldParametersEntry = noiseParmetersRegistry.getOrThrow(MultiNoiseBiomeSourceParameterLists.OVERWORLD);
+        MultiNoiseBiomeSource biomeSource=MultiNoiseBiomeSource.create(overworldParametersEntry);
+
         //yes i know this is awful but i'm doing it anyway.
         for(int t=0;t<temperatureBoundries.length-1;t++)
         {

@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "com.crackedmagnet.seedfindermod.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"ServerPlayerEntityMixin",
+		"ServerMixin",
+		"GeneratorOptionsMixin",
+		"ServerChunkManagerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

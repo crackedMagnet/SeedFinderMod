@@ -8,10 +8,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.util.registry.RegistryKey;
+
+import net.minecraft.registry.*;
+
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.world.gen.structure.StructureKeys;
 import net.minecraft.world.gen.structure.Structures;
 
 /**
@@ -37,59 +41,38 @@ public class ReferenceData {
      public static final Set<RegistryKey<Biome>> validPilagerOutpostBiomes=new HashSet<>();
      public static final Set<RegistryKey<Biome>> validJavaStrongholdBiomes=new HashSet<>();
      public static final Set<RegistryKey<Biome>> forestBiomes=new HashSet<>();
-     public static final Map<Structure, Set<RegistryKey<Biome>>> structureBiomes=new HashMap<>();
+      public static final Set<RegistryKey<Biome>> validTrailRuinsBiomes=new HashSet<>();
+     public static final Map<RegistryKey<Structure>, Set<RegistryKey<Biome>>> structureBiomes=new HashMap<>();
 
-     static
+   static
      {
 
+
         validSpawns.add(BiomeKeys.PLAINS);
-        //validSpawns.add(BiomeKeys.JUNGLE_HILLS);
         validSpawns.add(BiomeKeys.FOREST);
-        //validSpawns.add(BiomeKeys.DARK_FOREST);
-        //validSpawns.add(BiomeKeys.DARK_FOREST_HILLS);
         validSpawns.add(BiomeKeys.TAIGA);
-        //validSpawns.add(BiomeKeys.TAIGA_HILLS);
         validSpawns.add(BiomeKeys.JUNGLE);
-        //validSpawns.add(BiomeKeys.WOODED_HILLS);
-        
-        //validSpawns.add(BiomeKeys.SAVANNA);
-        //validSpawns.add(BiomeKeys.SAVANNA_PLATEAU);
-        
-        
-        //validVillageBiomeKeys.add(BiomeKeys.DESERT_HILLS);
+
         validVillageBiomes.add(BiomeKeys.PLAINS);
         validVillageBiomes.add(BiomeKeys.SUNFLOWER_PLAINS);
         validVillageBiomes.add(BiomeKeys.TAIGA);
         validVillageBiomes.add(BiomeKeys.SNOWY_TAIGA);
-        //validVillageBiomeKeys.add(BiomeKeys.TAIGA_HILLS);
-        //validVillageBiomeKeys.add(BiomeKeys.SNOWY_TAIGA_HILLS);
         validVillageBiomes.add(BiomeKeys.DESERT);
         validVillageBiomes.add(BiomeKeys.SAVANNA);
-        //validVillageBiomeKeys.add(BiomeKeys.SAVANNA_PLATEAU);
         validVillageBiomes.add(BiomeKeys.SNOWY_PLAINS);
         validVillageBiomes.add(BiomeKeys.MEADOW);
-        //validVillageBiomeKeys.add(BiomeKeys.OLD_GROWTH_PINE_TAIGA);
-        //validVillageBiomeKeys.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA);
-        //validVillageBiomeKeys.add(BiomeKeys.SAVANNA_PLATEAU);
-        //validVillageBiomeKeys.add(BiomeKeys.WINDSWEPT_SAVANNA);
-        
-        //[ab.plains, ab.sunflowerPlains, ab.savanna, ab.snowyTundra, ab.taiga, ab.taigaHills, ab.snowyTaigaHills, ab.desert]
+
         validPilagerOutpostBiomes.addAll(validVillageBiomes);
         validPilagerOutpostBiomes.add(BiomeKeys.STONY_PEAKS);
         validPilagerOutpostBiomes.add(BiomeKeys.FROZEN_PEAKS);
         validPilagerOutpostBiomes.add(BiomeKeys.JAGGED_PEAKS);
         validPilagerOutpostBiomes.add(BiomeKeys.SNOWY_SLOPES);
         validPilagerOutpostBiomes.add(BiomeKeys.GROVE);
-        structureBiomes.put(Structures.PILLAGER_OUTPOST.value(), validPilagerOutpostBiomes);
-        
-      
-        
+        structureBiomes.put(StructureKeys.PILLAGER_OUTPOST, validPilagerOutpostBiomes);
+
         validShipwreakBeachedBiomes.add(BiomeKeys.SNOWY_BEACH);
         validShipwreakBeachedBiomes.add(BiomeKeys.BEACH);
-        structureBiomes.put(Structures.SHIPWRECK_BEACHED.value(), validShipwreakBeachedBiomes);
-        
-        //validShipwreakBiomeKeys.add(BiomeKeys.SNOWY_BEACH);
-        //validShipwreakBiomeKeys.add(BiomeKeys.BEACH);
+        structureBiomes.put(StructureKeys.SHIPWRECK_BEACHED, validShipwreakBeachedBiomes);
         
         validShipwreakBiomes.add(BiomeKeys.OCEAN);
         validShipwreakBiomes.add(BiomeKeys.DEEP_OCEAN);
@@ -100,41 +83,30 @@ public class ReferenceData {
         validShipwreakBiomes.add(BiomeKeys.FROZEN_OCEAN);
         validShipwreakBiomes.add(BiomeKeys.DEEP_FROZEN_OCEAN);
         validShipwreakBiomes.add(BiomeKeys.WARM_OCEAN);
-        structureBiomes.put(Structures.SHIPWRECK.value(), validShipwreakBiomes);
-        
-        //validShipwreakBeachedBiomeKeys.add(BiomeKeys.BEACH);
-        
-        //allowedBiomeKeys: [U.beach, U.snowyBeach, U.legacyMushroomFieldsShore, U.ocean, U.deepOcean, U.coldOcean, 
-        //U.deepColdOcean, U.lukeWarmOcean, U.deepLukewarmOcean, U.frozenOcean, U.deepFrozenOcean, U.warmOcean],
-       // validShipwreakBeachedBiomeKeys.add(BiomeKeys.MUSHROOM_FIELD_SHORE);
-      
+        structureBiomes.put(StructureKeys.SHIPWRECK, validShipwreakBiomes);
+
         validBuriedTreasureBiomes.add(BiomeKeys.SNOWY_BEACH);
         validBuriedTreasureBiomes.add(BiomeKeys.BEACH);
-        //validBuriedTreasureBiomeKeys.add(BiomeKeys.MUSHROOM_FIELD_SHORE);
         validBuriedTreasureBiomes.add(BiomeKeys.STONY_SHORE);
-        structureBiomes.put(Structures.BURIED_TREASURE.value(), validBuriedTreasureBiomes);
+        structureBiomes.put(StructureKeys.BURIED_TREASURE, validBuriedTreasureBiomes);
        
         
         validIglooBiomes.add(BiomeKeys.SNOWY_TAIGA);
         validIglooBiomes.add(BiomeKeys.SNOWY_PLAINS);
-        structureBiomes.put(Structures.IGLOO.value(), validIglooBiomes);
+        structureBiomes.put(StructureKeys.IGLOO, validIglooBiomes);
         
         validDesertTempleBiomes.add(BiomeKeys.DESERT);
-        structureBiomes.put(Structures.DESERT_PYRAMID.value(), validDesertTempleBiomes);
-        //validDesertTempleBiomeKeys.add(BiomeKeys.DESERT_HILLS);
+        structureBiomes.put(StructureKeys.DESERT_PYRAMID, validDesertTempleBiomes);
         validJungleTempleBiomes.add(BiomeKeys.JUNGLE);
-        structureBiomes.put(Structures.JUNGLE_PYRAMID.value(), validJungleTempleBiomes);
-        //validJungleTempleBiomeKeys.add(BiomeKeys.JUNGLE_HILLS);
+        structureBiomes.put(StructureKeys.JUNGLE_PYRAMID, validJungleTempleBiomes);
         validWitchHutBiomes.add(BiomeKeys.SWAMP);
-        structureBiomes.put(Structures.SWAMP_HUT.value(), validWitchHutBiomes);
-        //validWitchHutBiomeKeys.add(BiomeKeys.SWAMP_HILLS);
-        
+        structureBiomes.put(StructureKeys.SWAMP_HUT, validWitchHutBiomes);
+
         validDeepOceanBiomes.add(BiomeKeys.DEEP_COLD_OCEAN);
         validDeepOceanBiomes.add(BiomeKeys.DEEP_FROZEN_OCEAN);
         validDeepOceanBiomes.add(BiomeKeys.DEEP_LUKEWARM_OCEAN);
         validDeepOceanBiomes.add(BiomeKeys.DEEP_OCEAN);
-        //validDeepOceanBiomeKeys.add(BiomeKeys.DEEP_WARM_OCEAN);
-        structureBiomes.put(Structures.MONUMENT.value(), validDeepOceanBiomes);
+        structureBiomes.put(StructureKeys.MONUMENT, validDeepOceanBiomes);
         
         validOceanBiomes.addAll(validDeepOceanBiomes);
         validOceanBiomes.add(BiomeKeys.OCEAN);
@@ -143,20 +115,10 @@ public class ReferenceData {
         validOceanBiomes.add(BiomeKeys.OCEAN);
         validOceanBiomes.add(BiomeKeys.LUKEWARM_OCEAN);
         validOceanBiomes.add(BiomeKeys.COLD_OCEAN);
-        
-        //validOceanBiomes.add(BiomeKeys.RIVER);
-        //validOceanBiomes.add(BiomeKeys.FROZEN_RIVER);
-        
-        
+
         validWoodlandMansionBiomes.add(BiomeKeys.DARK_FOREST);
-        structureBiomes.put(Structures.MANSION.value(), validWoodlandMansionBiomes);
-        
-        //validWoodlandMansionBiomeKeys.add(BiomeKeys.DARK_FOREST_HILLS);
-        //validWoodlandMansionBiomeKeys.add(BiomeKeys.MUSHROOM_FIELDS);
-        //pd = [X.deepColdOcean, X.deepFrozenOcean, X.deepLukewarmOcean, X.deepOcean, X.deepWarmOcean], 
-        //qd = [X.ocean, X.frozenOcean, X.deepOcean, X.warmOcean, X.lukeWarmOcean, X.coldOcean, X.deepWarmOcean, X.deepLukewarmOcean, X.deepColdOcean, X.deepFrozenOcean, X.river, X.frozenRiver]
-        //allowedBiomeKeys: [U.beach, U.snowyBeach, U.legacyMushroomFieldsShore, U.ocean, U.deepOcean, U.coldOcean, U.deepColdOcean, U.lukeWarmOcean, U.deepLukewarmOcean, U.frozenOcean, U.deepFrozenOcean, U.warmOcean],
-        
+        structureBiomes.put(StructureKeys.MANSION, validWoodlandMansionBiomes);
+
         validJavaStrongholdBiomes.add(BiomeKeys.PLAINS);
         validJavaStrongholdBiomes.add(BiomeKeys.DESERT);
         validJavaStrongholdBiomes.add(BiomeKeys.WINDSWEPT_HILLS);
@@ -205,28 +167,22 @@ public class ReferenceData {
         forestBiomes.add(BiomeKeys.SNOWY_TAIGA);
         forestBiomes.add(BiomeKeys.WOODED_BADLANDS);
         forestBiomes.add(BiomeKeys.WINDSWEPT_FOREST);
-        
-        
-         validJavaVillageBiomes.add(BiomeKeys.PLAINS);
-        //validJavaVillageBiomeKeys.add(BiomeKeys.SUNFLOWER_PLAINS);
+
+        validJavaVillageBiomes.add(BiomeKeys.PLAINS);
         validJavaVillageBiomes.add(BiomeKeys.TAIGA);
-        //validVillageBiomeKeys.add(BiomeKeys.SNOWY_TAIGA);
-        //validVillageBiomeKeys.add(BiomeKeys.TAIGA_HILLS);
-        //validVillageBiomeKeys.add(BiomeKeys.SNOWY_TAIGA_HILLS);
         validJavaVillageBiomes.add(BiomeKeys.DESERT);
         validJavaVillageBiomes.add(BiomeKeys.SAVANNA);
-        //validVillageBiomeKeys.add(BiomeKeys.SAVANNA_PLATEAU);
         validJavaVillageBiomes.add(BiomeKeys.SNOWY_PLAINS);
         validJavaVillageBiomes.add(BiomeKeys.MEADOW);
-        
-        
-        //structureBiomes.put(Structures.VILLAGE_DESERT.value(), validJavaVillageBiomes);
-   
-     
-     
 
-      
-        
+        validTrailRuinsBiomes.add(BiomeKeys.TAIGA);
+        validTrailRuinsBiomes.add(BiomeKeys.SNOWY_TAIGA);
+        validTrailRuinsBiomes.add(BiomeKeys.OLD_GROWTH_PINE_TAIGA);
+        validTrailRuinsBiomes.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA);
+        validTrailRuinsBiomes.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST);
+        validTrailRuinsBiomes.add(BiomeKeys.JUNGLE);
+
+
      }
   
      

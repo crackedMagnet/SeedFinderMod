@@ -7,6 +7,10 @@ package com.crackedmagnet.seedfindermod.structures;
 import com.crackedmagnet.seedfindermod.biome.QuickBiomeSource;
 import com.crackedmagnet.seedfindermod.biome.ReferenceData;
 import java.util.Set;
+
+import net.minecraft.registry.*;
+import net.minecraft.structure.StructureSet;
+import net.minecraft.structure.StructureSetKeys;
 import net.minecraft.structure.StructureSets;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.gen.chunk.placement.StructurePlacement;
@@ -17,8 +21,10 @@ import net.minecraft.world.gen.chunk.placement.StructurePlacement;
  */
 public class JavaPillagerOutpostFinder extends BiomeGridStructure {
 
+    protected static final RegistryEntryLookup<StructureSet> structureSetRegistry = BuiltinRegistries.createWrapperLookup().createRegistryLookup().getOrThrow(RegistryKeys.STRUCTURE_SET);
+
     public JavaPillagerOutpostFinder() {
-        super(StructureSets.PILLAGER_OUTPOSTS, ReferenceData.validPilagerOutpostBiomes);
+        super(structureSetRegistry.getOrThrow(StructureSetKeys.PILLAGER_OUTPOSTS), ReferenceData.validPilagerOutpostBiomes);
     }
 
     
