@@ -5,6 +5,7 @@
 package com.crackedmagnet.seedfindermod.init;
 
 import com.crackedmagnet.seedfindermod.biome.QuickBiomeSource;
+import com.crackedmagnet.seedfindermod.commands.SpawnerMobPredicateArgumentType;
 import com.crackedmagnet.seedfindermod.commands.StructureTypeArgument;
 import com.crackedmagnet.seedfindermod.event.CommandRegistrationHandler;
 import com.crackedmagnet.seedfindermod.event.PlayerChangeWorldsHandler;
@@ -33,8 +34,9 @@ public class SeedFinderModInit implements ModInitializer{
     @Override
     public void onInitialize() {
         LOGGER.info("Initialising Seed Finder Mod...");
-        LOGGER.debug("CommandRegistrationHandler.register()");
+        LOGGER.debug("SeedFinderModInit.onInitialize()");
         ArgumentTypeRegistry.registerArgumentType(new Identifier("seedfindermod", "structuretype"), StructureTypeArgument.class, ConstantArgumentSerializer.of(StructureTypeArgument::new));
+        ArgumentTypeRegistry.registerArgumentType(new Identifier("seedfindermod", "spawner_type"), SpawnerMobPredicateArgumentType.class, ConstantArgumentSerializer.of(SpawnerMobPredicateArgumentType::spawnerMobPredicate));
         
         StructureFinders.bootstrap();
         QuickBiomeSource.bootstrap();

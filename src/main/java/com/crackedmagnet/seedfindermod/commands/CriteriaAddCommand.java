@@ -6,6 +6,7 @@ package com.crackedmagnet.seedfindermod.commands;
 
 import com.crackedmagnet.seedfindermod.CustomWorldPreset;
 import com.crackedmagnet.seedfindermod.SeedFinderRegistries;
+import com.crackedmagnet.seedfindermod.SeedFinderUtils;
 import com.crackedmagnet.seedfindermod.search.SeedSearch;
 import com.crackedmagnet.seedfindermod.criteria.StructureClause;
 import com.crackedmagnet.seedfindermod.search.SearchThreadHolder;
@@ -42,18 +43,7 @@ public class CriteriaAddCommand implements Command<ServerCommandSource>{
                 RegistryKey<GridStructure> structureKey = context.getArgument("structure_type", RegistryKey.class);
 
                 Double maxDistance = context.getArgument("max_distance", Double.class);
-                List<ParsedCommandNode<ServerCommandSource>> nodes = context.getNodes();
-                boolean hasCriteriaIdx=false;
-                for(ParsedCommandNode<ServerCommandSource> node:nodes)
-                {
-                    String name = node.getNode().getName();
-                    if(name.equals("criteria_idx")) 
-                    {
-                        hasCriteriaIdx=true;
-                        break;
-                    }
-                }
-                if(hasCriteriaIdx)
+                if(SeedFinderUtils.hasArgument(context, "criteria_idx"))
                 {
                     Integer criteriaIdx=context.getArgument("criteria_idx", Integer.class);
                     result=seedSearch.addCriteria(new StructureClause(structureKey, criteriaIdx, maxDistance));

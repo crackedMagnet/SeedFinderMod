@@ -11,10 +11,14 @@ import com.crackedmagnet.seedfindermod.commands.CriteriaRemoveBiomeCommand;
 import com.crackedmagnet.seedfindermod.commands.CriteriaRemoveCommand;
 import com.crackedmagnet.seedfindermod.commands.CriteriaResetCommand;
 import com.crackedmagnet.seedfindermod.commands.HelpCommand;
+import com.crackedmagnet.seedfindermod.commands.InfoBiomesCommand;
+import com.crackedmagnet.seedfindermod.commands.InfoSpawnersCommand;
 import com.crackedmagnet.seedfindermod.commands.LoadSeedCommand;
 import com.crackedmagnet.seedfindermod.commands.NextBedrockCommand;
 import com.crackedmagnet.seedfindermod.commands.NextCommand;
+import com.crackedmagnet.seedfindermod.commands.SpawnerMobPredicateArgumentType;
 import com.crackedmagnet.seedfindermod.commands.StructureTypeArgument;
+import com.crackedmagnet.seedfindermod.stats.SpawnerMetric;
 import com.crackedmagnet.seedfindermod.structures.GridStructure;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
@@ -27,6 +31,7 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.RegistryPredicateArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import org.slf4j.Logger;
@@ -44,8 +49,10 @@ public class CommandRegistrationHandler implements CommandRegistrationCallback {
             LOGGER.debug("CommandRegistrationHandler.register()");
             DoubleArgumentType distanceArgumentType=DoubleArgumentType.doubleArg(0, 2000);
             IntegerArgumentType criteriaIdxArgumentType=IntegerArgumentType.integer();
-            
+ 
             RequiredArgumentBuilder<ServerCommandSource, RegistryKey<GridStructure>> structureTypeBuilder = CommandManager.argument("structure_type", new StructureTypeArgument());
+            
+            
                     
             LiteralArgumentBuilder<ServerCommandSource> addBuilder = 
                     CommandManager.literal("add")
@@ -87,10 +94,36 @@ public class CommandRegistrationHandler implements CommandRegistrationCallback {
                                     )
                             );
             
+            
+            
+            
+            LiteralArgumentBuilder<ServerCommandSource> spawnersBuilder=CommandManager.literal("spawners").executes(new InfoSpawnersCommand())
+                    .then(CommandManager.argument("spawner_type",SpawnerMobPredicateArgumentType.spawnerMobPredicate()).executes(new InfoSpawnersCommand())
+                        .then(CommandManager.argument("min_group_size", IntegerArgumentType.integer()).executes(new InfoSpawnersCommand()))
+                    
+                    );
+            
+            LiteralArgumentBuilder<ServerCommandSource> biomesBuilder=CommandManager.literal("biomes").executes(new InfoBiomesCommand())
+                    .then(CommandManager.argument("distance", IntegerArgumentType.integer()).executes(new InfoBiomesCommand()));
+            
+            /*
+            .then(CommandManager.literal("all").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.ZOMBIE_ONLY)))        
+                    .then(CommandManager.literal("zombie_only").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.ZOMBIE_ONLY)))
+                    .then(CommandManager.literal("skeleton_only").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.SKELETON_ONLY)))
+                    .then(CommandManager.literal("spider_only").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.SPIDER_ONLY)))
+                    .then(CommandManager.literal("cave_spider_only").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.CAVE_SPIDER_ONLY)))
+                    .then(CommandManager.literal("not_cave_spider").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.NOT_CAVE_SPIDER)))
+            */
+            
+            
             LiteralArgumentBuilder<ServerCommandSource> findSeedBuilder = CommandManager.literal("findseed")
                     .then(nextBuilder)
                     .then(nextBedrockBuilder)
                     .then(helpBuilder)
+                    .then(CommandManager.literal("info")
+                            .then(spawnersBuilder)
+                            .then(biomesBuilder)
+                    )
                     .then(CommandManager.literal("criteria")  
                         .then(listBuilder)
                         .then(addBuilder)

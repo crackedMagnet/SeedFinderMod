@@ -11,6 +11,7 @@ import java.util.function.UnaryOperator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.server.MinecraftServer;
@@ -39,7 +40,7 @@ public class ViewWorldSearchResultHandler extends SearchResultHandler{
     @Override
     public  void handleResult(long seed64, List<Pair<String, ChunkPos>> structures) {            
         LOGGER.debug("ViewWorldSearchResultHandler.handleResult() enter seed: "+Long.toString(seed64));
-        if(LOGGER.isDebugEnabled()) SeedFinderUtils.logChunkStructures(structures);//SeedFinderUtils.logChunkMatches(result);
+        if(LOGGER.isDebugEnabled()) SeedFinderUtils.logChunkStructures(structures);
         try
         {
             
@@ -84,7 +85,7 @@ public class ViewWorldSearchResultHandler extends SearchResultHandler{
         }
         
         SeedSearch seedSearch = SeedFinderRegistries.DEFAULT_SEED_SEARCH.value();
-  
+        
         ItemStack stack=new ItemStack(Items.WRITABLE_BOOK);
         UnaryOperator<String> op=UnaryOperator.identity();
         NbtList pages=new NbtList();
@@ -95,6 +96,7 @@ public class ViewWorldSearchResultHandler extends SearchResultHandler{
         stack.setSubNbt("pages", pages);
         stack.setSubNbt("title", NbtString.of(Long.toString(seed64)));
         stack.setSubNbt("author", NbtString.of("Seed Finder Mod"));
+        stack.setSubNbt("seedSearch", seedSearch.writeNbt(new NbtCompound())); //save search criteria for reload later.
         stack.setCustomName(Text.literal(Long.toString(seed64)));
         return stack;
     }

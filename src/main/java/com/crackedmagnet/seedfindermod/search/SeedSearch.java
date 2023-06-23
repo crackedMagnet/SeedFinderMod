@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.crackedmagnet.seedfindermod.search;
 
 import com.crackedmagnet.seedfindermod.biome.QuickBiomeSource;
@@ -11,6 +7,8 @@ import com.crackedmagnet.seedfindermod.criteria.StructureClause;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -23,7 +21,7 @@ public class SeedSearch {
     //will sort this out later
     List<StructureClause> structureCriteria=new ArrayList<>();
     List<BiomeClause> biomeCriteria=new ArrayList<>();
-  
+
     //needs some sort of callback
     public void doSearch()
     {
@@ -54,19 +52,7 @@ public class SeedSearch {
         }
         return true;
     }
-  /*  public List<List<ChunkPos>> pruneMatches(long seed, List<List<ChunkPos>> matches)
-    {
-        List<List<ChunkPos>> results=new ArrayList<>(structureCriteria.size());
-        for(int i=0;i<structureCriteria.size();i++)
-        {
-            StructureClause clause=structureCriteria.get(i);
-            
-            List<ChunkPos> matches = clause.getMatches(seed, results);
-            if(matches.isEmpty()) return null;
-            results.add(i, matches);
-        }
-        return results;
-    }*/
+
     public int addCriteria(BiomeClause clause)
     {
         biomeCriteria.add(clause);
@@ -100,6 +86,7 @@ public class SeedSearch {
     public void resetCriteria()
     {
         structureCriteria=new ArrayList<>();
+        biomeCriteria=new ArrayList<>();
     }
     
     public List<StructureClause> listCriteria()
@@ -133,6 +120,51 @@ public class SeedSearch {
         }
         return sb.toString();
     }
+    
+    public NbtCompound writeNbt(NbtCompound nbt)
+    {
+        NbtList structureCriteriaNbt=new NbtList();
+        for(StructureClause structureClause:structureCriteria)
+        {
+            structureCriteriaNbt.add(structureClause.writeNbt(new NbtCompound()));
+        }
+        
+        NbtList biomeCriteriaNbt=new NbtList();
+        for(BiomeClause biomeClause:biomeCriteria)
+        {
+            biomeCriteriaNbt.add(biomeClause.writeNbt(new NbtCompound()));
+        }
+        
+        nbt.put("structureCriteria", structureCriteriaNbt);
+        nbt.put("biomeCriteria", biomeCriteriaNbt);
+        
+        return nbt;
+    }
+    
+    public void setFromNbt(NbtCompound nbt)
+    {
+        structureCriteria=new ArrayList<>();
+        NbtList structureCriteriaNbt=(NbtList) nbt.get("structureCriteria");
+        
+        for(int i=0;i<structureCriteriaNbt.size();i++)
+        {
+            NbtCompound structureClauseNbt = structureCriteriaNbt.getCompound(i);
+            structureCriteria.add(StructureClause.fromNbt(structureClauseNbt));
+        }
+        
+        biomeCriteria=new ArrayList<>();
+        NbtList biomeCriteriaNbt=(NbtList) nbt.get("biomeCriteria");
+        
+        for(int i=0;i<biomeCriteriaNbt.size();i++)
+        {
+            NbtCompound biomeClauseNbt = biomeCriteriaNbt.getCompound(i);
+            if(biomeClauseNbt.contains("minPercent"))
+                biomeCriteria.add(BiomeProportionClause.fromNbt(biomeClauseNbt));
+            else
+                biomeCriteria.add(BiomeClause.fromNbt(biomeClauseNbt));
+        }
+    }
+    
     public String getBookCriteriaString()
     {
         
@@ -164,13 +196,6 @@ public class SeedSearch {
             sb.append("\n");
         }
         return sb.toString();
-    }
-    
-    
-    static
-    {
-        
-        
     }
     
 }

@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
@@ -28,6 +31,8 @@ public class StructureClause {
     double maxDistance;
     Integer fromClauseIdx;
     RegistryKey<GridStructure> structureFinderKey; 
+    
+  
 
 
     public StructureClause(RegistryKey<GridStructure> structureFinderKey, double maxDistance) 
@@ -45,6 +50,15 @@ public class StructureClause {
         this.maxDistance = maxDistance;
         this.fromClauseIdx=fromClauseIdx;
         this.structureFinderKey=structureFinderKey;
+    }
+    
+    private StructureClause(NbtCompound nbt)
+    {
+        this.gridStructure=SeedFinderRegistries.STRUCTURE_FINDER_REGISTRY.get(new Identifier(nbt.getString("structureFinderKey")));
+        maxDistance=nbt.getDouble("maxDistance");
+        if(nbt.contains("fromClauseIdx"))  fromClauseIdx=nbt.getInt("fromClauseIdx");
+        else fromClauseIdx=null;        
+        this.structureFinderKey=SeedFinderRegistries.STRUCTURE_FINDER_REGISTRY.getKey(gridStructure).orElseThrow();
     }
     
     public boolean isValid(long seed, QuickBiomeSource quickBiomeSource, ChunkPos cp)
@@ -95,6 +109,17 @@ public class StructureClause {
     }
     
     
+    public  NbtCompound writeNbt(NbtCompound nbt)
+    {
+        nbt.putString("structureFinderKey", structureFinderKey.getValue().toString());
+        nbt.putDouble("maxDistance", maxDistance);
+        if(fromClauseIdx!=null) nbt.putInt("fromClauseIdx", fromClauseIdx);
+        return nbt;
+    }
     
+    public static StructureClause fromNbt(NbtCompound nbt)
+    {
+        return new StructureClause(nbt);
+    }
     
 }
