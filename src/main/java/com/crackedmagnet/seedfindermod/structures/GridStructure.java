@@ -7,9 +7,9 @@ package com.crackedmagnet.seedfindermod.structures;
 import com.crackedmagnet.seedfindermod.biome.QuickBiomeSource;
 import java.util.HashSet;
 import java.util.Set;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.structure.StructureSet;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.gen.chunk.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.gen.chunk.placement.StructurePlacement;
 
@@ -21,8 +21,6 @@ import net.minecraft.world.gen.chunk.placement.StructurePlacement;
  * @author matthewferguson
  */
 public  class GridStructure implements StructureFinder{
-   //RegistryEntry<StructureSet> structureSetEntry;
-   //RandomSpreadStructurePlacement placement;
    StructureSet structureSet;
    Integer gridSize=null;
  

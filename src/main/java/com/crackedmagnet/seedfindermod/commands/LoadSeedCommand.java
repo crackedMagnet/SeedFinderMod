@@ -8,7 +8,6 @@ package com.crackedmagnet.seedfindermod.commands;
 import com.crackedmagnet.seedfindermod.CustomWorldPreset;
 import com.crackedmagnet.seedfindermod.SeedFinderRegistries;
 import com.crackedmagnet.seedfindermod.SeedFinderUtils;
-import static com.crackedmagnet.seedfindermod.commands.CriteriaResetCommand.LOGGER;
 import com.crackedmagnet.seedfindermod.search.SeedSearch;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;

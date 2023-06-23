@@ -10,6 +10,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.placement.StructurePlacement;
+import net.minecraft.world.gen.chunk.placement.StructurePlacementCalculator;
 import net.minecraft.world.gen.chunk.placement.StructurePlacementType;
 import net.minecraft.world.gen.noise.NoiseConfig;
 import org.slf4j.Logger;
@@ -34,26 +35,15 @@ public class BedrockGridStructurePlacement extends StructurePlacement{
         this.separation=separation;
         this.linear=linear;
     }
-    
-    
+
+
     @Override
-    protected boolean isStartChunk(ChunkGenerator chunkGenerator, NoiseConfig noiseConfig, long seed, int chunkX, int chunkZ) {
-   //     LOGGER.info("BedrockGridStructurePlacement.isStartChunk() called "+Long.toString(chunkX)+" "+Long.toString(chunkZ));
-        ChunkPos featureChunk = getPotentialFeatureChunk(seed,chunkX,chunkZ);
-        boolean output=featureChunk.x==chunkX&&featureChunk.z==chunkZ;
-      //  if(output) LOGGER.info("BedrockGridStructurePlacement.isStartChunk() true "+Long.toString(chunkX)+" "+Long.toString(chunkZ));
+    protected boolean isStartChunk(StructurePlacementCalculator calculator, int chunkX, int chunkZ) {
+        long seed = calculator.getStructureSeed();
+        ChunkPos featureChunk = getPotentialFeatureChunk(seed, chunkX, chunkZ);
+        boolean output = featureChunk.x == chunkX && featureChunk.z == chunkZ;
         return output;
     }
-
-    @Override
-    public boolean shouldGenerate(ChunkGenerator chunkGenerator, NoiseConfig noiseConfig, long seed, int chunkX, int chunkZ) {
-     //   LOGGER.info("BedrockGridStructurePlacement.shouldGenerate() called "+Long.toString(chunkX)+" "+Long.toString(chunkZ));
-        
-                boolean output=super.shouldGenerate(chunkGenerator, noiseConfig, seed, chunkX, chunkZ); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
-        //        if(output) LOGGER.info("BedrockGridStructurePlacement.shouldGenerate() true "+Long.toString(chunkX)+" "+Long.toString(chunkZ));
-                return output;
-    }
-
     
     
     @Override

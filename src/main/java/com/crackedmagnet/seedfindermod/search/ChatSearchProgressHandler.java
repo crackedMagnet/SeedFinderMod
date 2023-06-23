@@ -50,5 +50,10 @@ public class ChatSearchProgressHandler implements SearchProgressHandler{
         player.sendMessage(Text.literal(sb.toString()));
         
     }
+
+    @Override
+    public void sendMessage(String message) {
+        player.sendMessage(Text.literal(message));
+    }
     
 }

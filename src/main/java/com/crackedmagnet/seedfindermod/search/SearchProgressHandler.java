@@ -15,4 +15,5 @@ import net.minecraft.util.math.ChunkPos;
 public interface SearchProgressHandler {
     public void updateProgress(long current48bit, long count48bit, long millis);
     public void foundSeed(long seed, List<Pair<String, ChunkPos>> structures);
+    public void sendMessage(String message);
 }

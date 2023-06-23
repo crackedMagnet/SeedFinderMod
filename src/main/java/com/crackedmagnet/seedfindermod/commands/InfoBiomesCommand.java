@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 /**
@@ -66,7 +66,4 @@ public class InfoBiomesCommand implements Command<ServerCommandSource>{
 
         return entryList.size();
     }
-    /*
-     Map<RegistryKey<Biome>, Integer> biomeCounts = bs.getBiomeCounts(0, 0, 500);
-    */
 }

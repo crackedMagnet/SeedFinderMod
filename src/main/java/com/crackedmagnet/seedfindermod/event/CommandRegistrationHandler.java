@@ -14,26 +14,26 @@ import com.crackedmagnet.seedfindermod.commands.HelpCommand;
 import com.crackedmagnet.seedfindermod.commands.InfoBiomesCommand;
 import com.crackedmagnet.seedfindermod.commands.InfoSpawnersCommand;
 import com.crackedmagnet.seedfindermod.commands.LoadSeedCommand;
-import com.crackedmagnet.seedfindermod.commands.NextBedrockCommand;
 import com.crackedmagnet.seedfindermod.commands.NextCommand;
+import com.crackedmagnet.seedfindermod.commands.SeedFileCommand;
 import com.crackedmagnet.seedfindermod.commands.SpawnerMobPredicateArgumentType;
 import com.crackedmagnet.seedfindermod.commands.StructureTypeArgument;
-import com.crackedmagnet.seedfindermod.stats.SpawnerMetric;
 import com.crackedmagnet.seedfindermod.structures.GridStructure;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.LongArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.RegistryPredicateArgumentType;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,7 @@ public class CommandRegistrationHandler implements CommandRegistrationCallback {
                                     )
                             )
                             .then(CommandManager.literal("biome")
-                                    .then(CommandManager.argument("biome", RegistryPredicateArgumentType.registryPredicate(Registry.BIOME_KEY))
+                                    .then(CommandManager.argument("biome", RegistryPredicateArgumentType.registryPredicate(RegistryKeys.BIOME))
                                     
                                                .executes(new CriteriaAddBiomeCommand())
                                        .then(CommandManager.argument("percent", IntegerArgumentType.integer(1, 100))
@@ -77,8 +77,11 @@ public class CommandRegistrationHandler implements CommandRegistrationCallback {
                             );
             
             LiteralArgumentBuilder<ServerCommandSource> listBuilder=CommandManager.literal("list").executes(new CriteriaListCommand());
-            LiteralArgumentBuilder<ServerCommandSource> nextBuilder=CommandManager.literal("next").executes(new NextCommand());
-            LiteralArgumentBuilder<ServerCommandSource> nextBedrockBuilder=CommandManager.literal("next_bedrock").executes(new NextBedrockCommand());
+            LiteralArgumentBuilder<ServerCommandSource> seedFileBuilder=CommandManager.literal("seed_file")
+                .then(CommandManager.literal("clear").executes(new SeedFileCommand(true)))
+                .then(CommandManager.literal("load").then(CommandManager.argument("seed_list_filename", StringArgumentType.string()).executes(new SeedFileCommand(false))));
+            LiteralArgumentBuilder<ServerCommandSource> nextBuilder=CommandManager.literal("next").executes(new NextCommand(false));
+            LiteralArgumentBuilder<ServerCommandSource> nextBedrockBuilder=CommandManager.literal("next_bedrock").executes(new NextCommand(true));
             LiteralArgumentBuilder<ServerCommandSource> helpBuilder=CommandManager.literal("help").executes(new HelpCommand());
             LiteralArgumentBuilder<ServerCommandSource> resetBuilder=CommandManager.literal("clear").executes(new CriteriaResetCommand());
             LiteralArgumentBuilder<ServerCommandSource> removeBuilder=
@@ -106,19 +109,11 @@ public class CommandRegistrationHandler implements CommandRegistrationCallback {
             LiteralArgumentBuilder<ServerCommandSource> biomesBuilder=CommandManager.literal("biomes").executes(new InfoBiomesCommand())
                     .then(CommandManager.argument("distance", IntegerArgumentType.integer()).executes(new InfoBiomesCommand()));
             
-            /*
-            .then(CommandManager.literal("all").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.ZOMBIE_ONLY)))        
-                    .then(CommandManager.literal("zombie_only").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.ZOMBIE_ONLY)))
-                    .then(CommandManager.literal("skeleton_only").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.SKELETON_ONLY)))
-                    .then(CommandManager.literal("spider_only").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.SPIDER_ONLY)))
-                    .then(CommandManager.literal("cave_spider_only").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.CAVE_SPIDER_ONLY)))
-                    .then(CommandManager.literal("not_cave_spider").executes(new InfoSpawnersCommand(SpawnerMetric.SpawnerPredicate.NOT_CAVE_SPIDER)))
-            */
-            
-            
+
             LiteralArgumentBuilder<ServerCommandSource> findSeedBuilder = CommandManager.literal("findseed")
                     .then(nextBuilder)
                     .then(nextBedrockBuilder)
+                    .then(seedFileBuilder)
                     .then(helpBuilder)
                     .then(CommandManager.literal("info")
                             .then(spawnersBuilder)

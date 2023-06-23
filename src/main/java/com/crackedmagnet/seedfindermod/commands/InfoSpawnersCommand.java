@@ -19,10 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 /**
  *
@@ -43,7 +46,11 @@ public class InfoSpawnersCommand implements Command<ServerCommandSource>{
         try
         {
             ServerWorld world = context.getSource().getWorld();
-            BlockPos playerPos=new BlockPos(context.getSource().getPlayer().getPos());
+            ServerPlayerEntity player =context.getSource().getPlayer();
+
+            Vec3d posd=(context.getSource().getPlayer().getPos());
+            Vec3i posi=new Vec3i((int) posd.x, (int) posd.y, (int) posd.z);
+            BlockPos playerPos=new BlockPos(posi);
             StringBuilder sb=new StringBuilder();
 
             SpawnerMetric.SpawnerPredicate predicate=SpawnerMetric.SpawnerPredicate.ALL;

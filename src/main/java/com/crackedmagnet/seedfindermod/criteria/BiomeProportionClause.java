@@ -7,7 +7,7 @@ package com.crackedmagnet.seedfindermod.criteria;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 

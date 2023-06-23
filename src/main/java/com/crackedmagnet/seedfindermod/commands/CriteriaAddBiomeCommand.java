@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.minecraft.command.argument.RegistryPredicateArgumentType;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.ClickEvent;
@@ -27,8 +29,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
+
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import org.slf4j.Logger;
@@ -53,8 +54,6 @@ public class CriteriaAddBiomeCommand implements Command<ServerCommandSource>{
         try
         {
             synchronized (seedSearch) {
-
-
                 RegistryPredicateArgumentType.RegistryPredicate<Biome> biomePredicate=context.getArgument("biome",RegistryPredicateArgumentType.RegistryPredicate.class);
 
                 Set<RegistryKey<Biome>> biomes=new HashSet<>();
@@ -65,9 +64,7 @@ public class CriteriaAddBiomeCommand implements Command<ServerCommandSource>{
                 Set<RegistryEntry<Biome>> entrySet = biomeSource.getBiomes().stream().filter(biomePredicate).collect(Collectors.toUnmodifiableSet());
          
                 entrySet.forEach((entry) -> { 
-                    //biomes.add(BuiltinRegistries.BIOME.get(entry.getKey().get().getValue()));
-                    
-                    biomes.add(entry.getKey().orElseThrow()); 
+                    biomes.add(entry.getKey().orElseThrow());
                 });
                
                 List<ParsedCommandNode<ServerCommandSource>> nodes = context.getNodes();

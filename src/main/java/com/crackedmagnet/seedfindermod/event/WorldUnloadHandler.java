@@ -23,10 +23,7 @@ public class WorldUnloadHandler implements ServerWorldEvents.Unload{
     public void onWorldUnload(MinecraftServer ms, ServerWorld sw) {
         if(Settings.modEnabled)
         {
-            LOGGER.debug("WorldUnloadHandler.onWorldUnload()");
-
-            SearchThreadHolder.stopAndClear();
-            Settings.bedrock=false;
+            LOGGER.info("WorldUnloadHandler.onWorldUnload()");
         }
     }
     

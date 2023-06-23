@@ -16,6 +16,9 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -24,10 +27,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.world.MobSpawnerLogic;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.gen.structure.Structure;
 
 /**
  *
@@ -35,6 +39,7 @@ import net.minecraft.world.chunk.ChunkStatus;
  */
 public class SpawnerMetric {
 
+    protected static final Registry<EntityType> entityTypeRegistry = (Registry<EntityType>) Registries.REGISTRIES.get(RegistryKeys.ENTITY_TYPE.getValue());
     public static List<Pair<BlockPos,String>> getSpawners(ServerWorld world, BlockPos center, int chunkRange, SpawnerPredicate predicate)
     {
         ChunkPos centercp=new ChunkPos(center);
@@ -52,8 +57,10 @@ public class SpawnerMetric {
                     if(blockEntityOptional.isEmpty()) continue;
                     MobSpawnerBlockEntity spawner=blockEntityOptional.get();
                     MobSpawnerLogic logic = spawner.getLogic();
-                    Entity entity = logic.getRenderedEntity(world);
-                    Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
+
+                    Entity entity = logic.getRenderedEntity(world,new LocalRandom(world.getSeed()),bp);
+
+                    Identifier id = entityTypeRegistry.getId(entity.getType());
                     if(!predicate.matches(entity.getType())) continue;
                     output.add(new Pair<>(bp,id.getPath()));
                 }

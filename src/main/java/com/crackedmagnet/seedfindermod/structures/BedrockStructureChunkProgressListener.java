@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
@@ -15,7 +16,6 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.structure.Structure;
@@ -48,8 +48,6 @@ public class BedrockStructureChunkProgressListener implements WorldGenerationPro
                 ChunkGenerator chunkGenerator = serverWorld.getChunkManager().getChunkGenerator();
                 
                 StructureStart structureStart = structure.createStructureStart(serverWorld.getRegistryManager(), chunkGenerator, chunkGenerator.getBiomeSource(), serverWorld.getChunkManager().getNoiseConfig(), serverWorld.getStructureTemplateManager(), serverWorld.getSeed(), cp, 0, serverWorld, (registryEntry) -> {return true;});
-                // List<StructureStart> list = starts.computeIfAbsent(cp, (t) -> {return new ArrayList<>();});
-                //list.add(structureStart);
                 BlockBox bb = structureStart.getBoundingBox();
                 ChunkPos minChunk=new ChunkPos(new BlockPos(bb.getMinX(), 0, bb.getMinZ()));
                 ChunkPos maxChunk=new ChunkPos(new BlockPos(bb.getMaxX(), 0, bb.getMaxZ()));

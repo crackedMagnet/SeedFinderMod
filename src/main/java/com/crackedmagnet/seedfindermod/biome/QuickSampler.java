@@ -1,8 +1,13 @@
 package com.crackedmagnet.seedfindermod.biome;
 
+import net.minecraft.Bootstrap;
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.math.random.Xoroshiro128PlusPlusRandom;
-import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSourceParameterList;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSourceParameterLists;
 import net.minecraft.world.gen.noise.NoiseParametersKeys;
 
 /**
@@ -25,17 +30,29 @@ public class QuickSampler {
     private static final SeedHash ridgeHash=new SeedHash("minecraft:ridge");
     private static final SeedHash offsetHash=new SeedHash("minecraft:offset");
 
-    private static final DoublePerlinNoiseSampler.NoiseParameters temperatureParams = BuiltinRegistries.NOISE_PARAMETERS.get(NoiseParametersKeys.TEMPERATURE);
-    private static final DoublePerlinNoiseSampler.NoiseParameters vegetationParams = BuiltinRegistries.NOISE_PARAMETERS.get(NoiseParametersKeys.VEGETATION);
-    private static final DoublePerlinNoiseSampler.NoiseParameters continentalnessParams = BuiltinRegistries.NOISE_PARAMETERS.get(NoiseParametersKeys.CONTINENTALNESS);
-    private static final DoublePerlinNoiseSampler.NoiseParameters erosionParams = BuiltinRegistries.NOISE_PARAMETERS.get(NoiseParametersKeys.EROSION);
-    private static final DoublePerlinNoiseSampler.NoiseParameters ridgeParams = BuiltinRegistries.NOISE_PARAMETERS.get(NoiseParametersKeys.RIDGE);
-    private static final DoublePerlinNoiseSampler.NoiseParameters offsetParams = BuiltinRegistries.NOISE_PARAMETERS.get(NoiseParametersKeys.OFFSET);
+    private static  DoublePerlinNoiseSampler.NoiseParameters temperatureParams;
+    private static  DoublePerlinNoiseSampler.NoiseParameters vegetationParams;
+    private static  DoublePerlinNoiseSampler.NoiseParameters continentalnessParams;
+    private static  DoublePerlinNoiseSampler.NoiseParameters erosionParams;
+    private static  DoublePerlinNoiseSampler.NoiseParameters ridgeParams;
+    private static  DoublePerlinNoiseSampler.NoiseParameters offsetParams;
     
     Xoroshiro128PlusPlusRandom rng=new Xoroshiro128PlusPlusRandom(0);
     
     public QuickSampler() {
-      
+
+
+    }
+
+    public static void bootstrap(RegistryEntryLookup.RegistryLookup registryLookup)
+    {
+        RegistryEntryLookup<DoublePerlinNoiseSampler.NoiseParameters> noiseParmetersRegistry = registryLookup.getOrThrow(RegistryKeys.NOISE_PARAMETERS);
+        temperatureParams = noiseParmetersRegistry.getOrThrow(NoiseParametersKeys.TEMPERATURE).value();
+        vegetationParams = noiseParmetersRegistry.getOrThrow(NoiseParametersKeys.VEGETATION).value();
+        continentalnessParams = noiseParmetersRegistry.getOrThrow(NoiseParametersKeys.CONTINENTALNESS).value();
+        erosionParams = noiseParmetersRegistry.getOrThrow(NoiseParametersKeys.EROSION).value();
+        ridgeParams = noiseParmetersRegistry.getOrThrow(NoiseParametersKeys.RIDGE).value();
+        offsetParams = noiseParmetersRegistry.getOrThrow(NoiseParametersKeys.OFFSET).value();
     }
     
     private Xoroshiro128PlusPlusRandom rngFromHash(long forklo, long forkhi, SeedHash seedHash)
